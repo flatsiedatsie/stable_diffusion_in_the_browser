@@ -221,6 +221,8 @@ const STATUS = {
   DONE: 3
 };
 
+console.log("getRequestPrefix(modelName): ", getRequestPrefix(modelName));
+
 function getConfig() {
   var config = {
     model: getRequestPrefix(modelName),
@@ -309,7 +311,7 @@ async function fetchAndCache(name, base_url, model_path) {
       if (DOWNLOAD_PROMPT_DIV.textContent === "") {
         DOWNLOAD_PROMPT_DIV.textContent = `These models will be downloaded only once.`;
       }
-
+      console.log("fetching url: ", url);
       const response = await fetch(url);
 
       if (response.status === 404) {
@@ -497,16 +499,21 @@ const loadScript = (src) => {
 };
 
 if (VITE_ENV_USE_REMOTE_MODELS) {
+  console.log("loading ort.webgpu.min.js from jsdelivr");
   await loadScript(
     "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.18.0/dist/ort.webgpu.min.js"
   );
   console.log("ONNX Runtime Web script loaded successfully.");
 } else {
+  console.log("loading ort.webgpu.min.js from local ../../models folder");
   await loadScript(
     "../../models/frameworks/ort-web/ort-web@1_18_0/ort.webgpu.min.js"
   );
   console.log("Loaded ORT Web locally successfully.");
 }
+
+console.log("config.provider (wasm/webgpu/webnn): ", config.provider);
+
 
 if (config.provider == "webgpu") {
   ort.env.wasm.numThreads = 1;
